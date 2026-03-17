@@ -31,7 +31,7 @@ def get_all_weather_data():
 
         weather_data = []
         for point in results:
-            station_id = ws_map.get(point.weatherstation_id)
+            station_id = ws_map[point.id]
 
             weather_data.append(Weather(
                 station_id=str(station_id),
@@ -69,7 +69,7 @@ def post_weather_data(weather: Weather):
         results = session.exec(statement).all()
         if not results:
             return {"Status": "You must first register"}
-        weatherstation_id = results[0].id
+        weatherstation_id = results[0].station_id
 
     data = DataPoint(
             temperature=weather.sensors.temperature,
