@@ -1,2 +1,2 @@
 [tool.fastapi]
-entrypoint = "src:controller:app"
+entrypoint = "src.controller:app"
