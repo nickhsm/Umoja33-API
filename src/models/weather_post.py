@@ -1,3 +1,4 @@
+import datetime
 from pydantic import BaseModel
 
 
@@ -11,4 +12,4 @@ class Sensors(BaseModel):
 class Weather(BaseModel):
     station_id: str
     sensors: Sensors
-    timestamp: str
+    timestamp: datetime.datetime

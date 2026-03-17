@@ -3,12 +3,15 @@ from typing import Annotated
 from fastapi import FastAPI
 from sqlmodel import Session, select
 
+from .models.register_weatherstation import RegisterWeatherStation
+
 from .database.orm.weather import DataPoint, WeatherStation
 from .database.database_connection import engine
 
 from .models.weather_post import Weather
 
 app = FastAPI()
+
 
 
 @app.get("/")
@@ -20,7 +23,10 @@ def post_weather_data(weather: Weather):
     # Get weatherstation_id
     with Session(engine) as session:
         statement = select(WeatherStation).where(WeatherStation.station_id == weather.station_id)
-        weatherstation_id = session.exec(statement)
+        weatherstation_result = session.exec(statement)
+        list_result = weatherstation_result.all()
+        if list_result == []:
+            return {"Status": "You must first register"}
 
     data = DataPoint(
             temperature=weather.sensors.temperature,
@@ -29,10 +35,11 @@ def post_weather_data(weather: Weather):
             wind_direction=weather.sensors.wind_direction,
             precipitation=weather.sensors.precipitation,
             timestamp=weather.timestamp,
-            weatherstation_id=weatherstation_id
+            weatherstation_id=list_result[0].station_id
             )
 
     with Session(engine) as session:
         session.add(data)
+        session.commit()
 
     return {"Status": "success"}
