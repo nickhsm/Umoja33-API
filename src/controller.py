@@ -18,6 +18,20 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+@app.post("/register/weatherstation")
+def register_weatherstation(weatherStation: RegisterWeatherStation):
+    print(weatherStation.station_id)
+    weatherStation = WeatherStation(
+            station_id=weatherStation.station_id,
+            )
+
+    with Session(engine) as session:
+        session.add(weatherStation)
+        session.commit()
+
+    return {"Status": "success"}
+
+
 @app.post("/weather")
 def post_weather_data(weather: Weather):
     # Get weatherstation_id
