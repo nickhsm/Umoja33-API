@@ -23,10 +23,18 @@ def get_all_weather_data():
         statement = select(DataPoint)
         results = session.exec(statement).all()
 
+        statement = select(WeatherStation)
+        results_WS = session.exec(statement).all()
+
+        # Create a map of id -> station_id
+        ws_map = {ws.id: ws.station_id for ws in results_WS}
+
         weather_data = []
         for point in results:
+            station_id = ws_map.get(point.weatherstation_id)
+
             weather_data.append(Weather(
-                station_id=str(point.weatherstation_id),
+                station_id=str(station_id),
                 timestamp=point.timestamp,
                 sensors=Sensors(
                     temperature=point.temperature,
