@@ -6,8 +6,7 @@ class Sensors(BaseModel):
     humidity: float
     wind_speed: float
     wind_direction: int
-
-
+    precipitation: int
 
 class Weather(BaseModel):
     station_id: str
